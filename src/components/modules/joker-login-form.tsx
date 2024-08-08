@@ -9,9 +9,9 @@ interface LoginFormProps {
     error: string;
 }
 
-export default function LoginForm({ onSubmit, error }: LoginFormProps) {
+export default function JokerLoginForm({ onSubmit, error }: LoginFormProps) {
     const [username, setUsername] = useState('');
-    const [userType, setUserType] = useState('Batman');
+    const [userType, setUserType] = useState('Joker');
 
     useEffect(() => {
         const lastUsername = localStorage.getItem('lastUsername');
@@ -26,17 +26,17 @@ export default function LoginForm({ onSubmit, error }: LoginFormProps) {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen p-5">
-            <form onSubmit={handleSubmit} className="w-80 bg-white border border-gray-100 p-2 rounded-lg shadow-md max-w-md w-full">
-                <h1 className="text-lg font-semibold mb-2 text-center text-slate-400">Login</h1>
+        <div className="flex flex-col items-center justify-center h-screen py-5">
+            <form onSubmit={handleSubmit} className="bg-white border border-gray-100 p-5 rounded-lg shadow-md max-w-md w-full">
+                <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
                 <Input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Enter your username"
-                    className="mb-4"
+                    className="mb-6"
                 />
-                <div className="mb-4">
+                <div className="mb-6">
                     <Label className="mb-3 block text-center">Choose your team:</Label>
                     <RadioGroup
                         defaultValue="Batman"
@@ -44,14 +44,13 @@ export default function LoginForm({ onSubmit, error }: LoginFormProps) {
                         className="flex justify-center space-x-4"
                     >
                         <div className="flex flex-col items-center">
-                            <RadioGroupItem value="Batman" id="Batman" className="sr-only"/>
+                            <RadioGroupItem value="Joker" id="Joker" className="sr-only"/>
                             <Label
-                                htmlFor="Batman"
-                                className={`cursor-pointer p-4 rounded-lg border-2 ${userType === 'Batman' ? 'border-blue-500 bg-blue-100' : 'border-gray-300'}`}
+                                htmlFor="Joker"
+                                className={`cursor-pointer p-4 rounded-lg border-2 ${userType === 'Joker' ? 'border-green-500 bg-green-100' : 'border-gray-300'}`}
                             >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src="/batman-logo.png" alt="Batman" className="w-20 h-20 mb-2"/>
-                                <span className="block text-center">Batman</span>
+                                <img src="/joker-logo.png" alt="Joker" className="w-20 h-20 mb-2"/>
+                                <span className="block text-center">Joker</span>
                             </Label>
                         </div>
                     </RadioGroup>
@@ -59,7 +58,7 @@ export default function LoginForm({ onSubmit, error }: LoginFormProps) {
                 <Button type="submit" className="w-full bg-slate-900 text-white">
                     Start Game
                 </Button>
-                {error && <p className="text-red-500 text-xs text-center">{error}</p>}
+                {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
             </form>
         </div>
     );

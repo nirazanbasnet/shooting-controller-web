@@ -12,6 +12,7 @@ body {
     margin: 0;
     height: 100vh; /* fallback for Js load */
     height: var(--doc-height);
+    background: #222222;
 }
 
 @keyframes progress {

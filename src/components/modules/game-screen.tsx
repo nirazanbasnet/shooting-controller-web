@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import Sidebar from "@/components/modules/sidebar";
 import MainScreen from "@/components/modules/main-screen";
 
@@ -45,6 +45,18 @@ export default function GameScreen({ user }: GameScreenProps) {
             console.log('Action in cooldown, click ignored');
         }
     };
+
+    useEffect(() => {
+        const updateDocumentHeight = () => {
+            const doc = document.documentElement
+            doc.style.setProperty("--doc-height", `${window.innerHeight}px`)
+        }
+
+        window.addEventListener("resize", updateDocumentHeight)
+        updateDocumentHeight()
+
+        return () => { window.removeEventListener("resize", updateDocumentHeight) }
+    }, [])
 
     return (
         <div className="h-full">

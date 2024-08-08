@@ -34,38 +34,26 @@ export default function Sidebar({ onActionClick, activeAction, cooldowns, user }
     const batmanAvatar = './batman-logo.png';
 
     const handleLogout = () => {
+        const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+        localStorage.setItem('lastUsername', currentUser.username);
         localStorage.removeItem('user');
         window.location.reload();
     };
 
     return (
-        <div className="w-[100px] bg-white p-4 flex flex-col items-center">
-            <div>
-                <div className="flex items-center justify-center mb-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                        src={user.userType === 'Joker' ? jokerAvatar : batmanAvatar}
-                        alt="User Avatar"
-                        className="size-16"
-                        onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = 'https://avatars.dicebear.com/api/avataaars/fallback.svg'; // Fallback avatar
-                        }}
-                    />
-                </div>
-                <div className="mb-2 text-center">
-                    <p className="text-xs font-semibold break-all">{user.username}</p>
-                    <p className="text-xs text-gray-600">{user.userType}</p>
-                </div>
+        <div className="bg-white py-4 flex flex-col items-center">
+            <div className="mb-2 text-center">
+                <p className="text-xs font-semibold break-all">{user.username}</p>
+                <p className="text-xs text-gray-600">{user.userType}</p>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 mt-4">
                 {actions.map((action) => (
-                    <div key={action} className="mb-4 relative">
+                    <div key={action} className="relative">
                         <Button
                             id={`button-${action}`}
                             onClick={() => handleActionClick(action)}
                             disabled={cooldowns[action]}
-                            className={`w-16 h-16 rounded-full block !p-0 
+                            className={`w-16 h-16 rounded-none block !p-0 
                             ${activeAction === action ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`
                             }
                         >

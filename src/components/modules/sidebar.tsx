@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 
-type ActionType = 'slow' | 'size' | 'shield' | 'hit';
+type ActionType = 'speed' | 'size' | 'shield' | 'hit';
 
 interface User {
     username: string;
@@ -29,9 +29,7 @@ export default function Sidebar({ onActionClick, activeAction, cooldowns, user }
         }
     };
 
-    const actions: ActionType[] = user.userType === 'Batman' ? ['hit'] : ['slow', 'size', 'shield'];
-    const jokerAvatar = './joker-logo.png';
-    const batmanAvatar = './batman-logo.png';
+    const actions: ActionType[] = user.userType === 'Batman' ? ['hit'] : ['speed', 'size', 'shield'];
 
     const handleLogout = () => {
         const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -42,25 +40,27 @@ export default function Sidebar({ onActionClick, activeAction, cooldowns, user }
 
     return (
         <div className="bg-white py-4 flex flex-col items-center">
-            <div className="mb-2 text-center">
-                <p className="text-xs font-semibold break-all">{user.username}</p>
-                <p className="text-xs text-gray-600">{user.userType}</p>
+            <div>
+                <div className="mb-2 text-center">
+                    <p className="text-xs font-semibold break-all">{user.username}</p>
+                    <p className="text-xs text-gray-600">{user.userType}</p>
+                </div>
             </div>
-            <div className="flex-1 mt-4">
+            <div className="flex-1">
                 {actions.map((action) => (
-                    <div key={action} className="relative">
+                    <div key={action} className="mb-1 relative">
                         <Button
                             id={`button-${action}`}
                             onClick={() => handleActionClick(action)}
                             disabled={cooldowns[action]}
-                            className={`w-16 h-16 rounded-none block !p-0 
+                            className={`size-14 block !p-0 rounded-full 
                             ${activeAction === action ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`
                             }
                         >
                             {action.charAt(0).toUpperCase() + action.slice(1)}
                         </Button>
                         {cooldowns[action] && (
-                            <div className="absolute size-16 inset-0 rounded-full border-4 border-blue-500 animate-progress"/>
+                            <div className="absolute size-14 inset-0 rounded-full border-4 border-blue-500 animate-progress"/>
                         )}
                     </div>
                 ))}

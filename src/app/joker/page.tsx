@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import GameScreen from "@/components/modules/game-screen";
 import JokerLoginForm from "@/components/modules/joker-login-form";
 
-
 interface User {
     username: string;
     userType: string;

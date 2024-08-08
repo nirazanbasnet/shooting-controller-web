@@ -24,7 +24,7 @@ body {
 }
 
 .animate-progress {
-    animation: progress 0.3s linear;
+    animation: progress 0.5s linear;
 }
 
 @keyframes vibrate {

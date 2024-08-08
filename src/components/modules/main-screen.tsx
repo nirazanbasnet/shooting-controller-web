@@ -6,6 +6,8 @@ interface MainScreenProps {
     activeAction: string;
     isInCooldown: boolean;
     userType: string;
+    username: string;
+    socket: WebSocket | null;
 }
 
 interface Ripple {
@@ -14,24 +16,42 @@ interface Ripple {
     size: number;
 }
 
-export default function MainScreen({ onScreenClick, activeAction, isInCooldown, userType }: MainScreenProps) {
+export default function MainScreen({ onScreenClick, activeAction, isInCooldown, userType, username, socket }: MainScreenProps) {
     const [lastClick, setLastClick] = useState({ x: 0, y: 0 });
     const [ripples, setRipples] = useState<Ripple[]>([]);
     const mainScreenRef = useRef<HTMLDivElement>(null);
 
+    const isClickable = !isInCooldown;
+
     const handleClick = useCallback(
         debounce((e: React.MouseEvent<HTMLDivElement>) => {
-            if (mainScreenRef.current && (userType === 'Batman' || !isInCooldown)) {
+            if (mainScreenRef.current && isClickable) {
                 const rect = mainScreenRef.current.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
                 setLastClick({ x, y });
-                onScreenClick(x, y, userType === 'Batman' ? undefined : activeAction);
+                onScreenClick(x, y, userType === 'Batman' ? 'hit' : activeAction);
+
+                // Send WebSocket message
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    const messageObj = {
+                        user: username,
+                        type: "action",
+                        message: JSON.stringify({
+                            action: userType === 'Batman' ? 'hit' : activeAction,
+                            xPos: x,
+                            yPos: y
+                        })
+                    };
+                    const serializedMessage = JSON.stringify(messageObj);
+                    socket.send(serializedMessage);
+                }
+
                 // Add ripple effect
                 setRipples(prev => [...prev, { x: e.clientX - rect.left, y: e.clientY - rect.top, size: 0 }]);
             }
         }, 100),
-        [onScreenClick, activeAction, isInCooldown, userType]
+        [onScreenClick, activeAction, isInCooldown, userType, username, socket, isClickable]
     );
 
     useEffect(() => {
@@ -55,7 +75,7 @@ export default function MainScreen({ onScreenClick, activeAction, isInCooldown, 
     return (
         <div
             ref={mainScreenRef}
-            className={`flex-1 bg-gray-100 relative overflow-hidden ${userType === 'Batman' || !isInCooldown ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+            className={`flex-1 bg-gray-100 relative overflow-hidden ${isClickable ? 'cursor-pointer' : 'cursor-not-allowed'}`}
             onClick={handleClick}
         >
             {ripples.map((ripple, index) => (
@@ -72,7 +92,6 @@ export default function MainScreen({ onScreenClick, activeAction, isInCooldown, 
             ))}
 
             <div className="absolute inset-0 z-0 flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={userType === 'Joker' ? jokerAvatar : batmanAvatar} alt="User Avatar" className="size-56 opacity-10"/>
             </div>
         </div>
